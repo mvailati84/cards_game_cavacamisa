@@ -14,14 +14,39 @@ cards_game_camicia/
 
 ## Quick Start
 
-1. **Start all services:**
+### Development Environment (with Live Reloading)
+
+1. **Start development services:**
    ```bash
-   docker-compose up --build
+   docker-compose -f docker-compose.dev.yml up --build
    ```
 
 2. **Access the application:**
-   - Frontend: http://localhost:3000
+   - Frontend: http://localhost:3000 (with live reloading)
    - Backend API: http://localhost:8080
+
+3. **Development features:**
+   - Live code reloading on file changes
+   - Hot Module Replacement (HMR)
+   - Volume mounting for instant file sync
+   - Development-specific Vite configuration
+
+### Production Environment
+
+1. **Start production services:**
+   ```bash
+   docker-compose -f docker-compose.prod.yml up --build
+   ```
+
+2. **Access the application:**
+   - Frontend: http://localhost (port 80)
+   - Backend API: http://localhost:8080
+
+3. **Production features:**
+   - Optimized builds
+   - Nginx serving static files
+   - No development dependencies
+   - Restart policies for reliability
 
 ## Development
 

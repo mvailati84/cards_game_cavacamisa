@@ -4,7 +4,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_PROFILES_ACTIVE=production
     networks:
       - cavacamisa-network
     healthcheck:
@@ -13,17 +13,21 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+    restart: unless-stopped
 
   frontend:
-    build: ./frontend
+    build: 
+      context: ./frontend
+      dockerfile: Dockerfile.prod
     ports:
-      - "3000:3000"
+      - "80:80"
     depends_on:
       - backend
     networks:
       - cavacamisa-network
     environment:
       - VITE_API_URL=http://backend:8080
+    restart: unless-stopped
 
 networks:
   cavacamisa-network:

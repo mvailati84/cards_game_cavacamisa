@@ -15,7 +15,9 @@ services:
       start_period: 40s
 
   frontend:
-    build: ./frontend
+    build: 
+      context: ./frontend
+      dockerfile: Dockerfile.dev
     ports:
       - "3000:3000"
     depends_on:
@@ -24,6 +26,13 @@ services:
       - cavacamisa-network
     environment:
       - VITE_API_URL=http://backend:8080
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    stdin_open: true
+    tty: true
 
 networks:
   cavacamisa-network:
