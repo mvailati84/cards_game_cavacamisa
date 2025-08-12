@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import './App.css'
+import StatusSummary from './components/StatusSummary'
 
 function App() {
   const [backendStatus, setBackendStatus] = useState('checking')
@@ -58,20 +59,15 @@ function App() {
               backendStatus === 'connected' ? 'status-success' : 
               backendStatus === 'error' ? 'status-error' : 'status-checking'
             }`}>
-              {backendStatus === 'connected' ? '✅ Connected' :
+              {backendStatus === 'connected' ? '✅ Ready' :
                backendStatus === 'error' ? '❌ Error' : '⏳ Checking...'}
             </span>
           </div>
         </div>
-        {backendMessage && (
-          <p className="backend-message">{backendMessage}</p>
-        )}
-        {(backendStatus === 'connected') && (
-          <div className="app-info">
-            <p>🎮 The Cavacamisa Cards Game application is ready!</p>
-            <p>Both frontend and backend services are running successfully.</p>
-          </div>
-        )}
+        <StatusSummary 
+          backendStatus={backendStatus} 
+          backendMessage={backendMessage} 
+        />
       </header>
     </div>
   )

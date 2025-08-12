@@ -1,0 +1,31 @@
+.status-summary-box {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  font-weight: 500;
+  font-size: 1.15rem;
+  transition: all 0.3s ease;
+}
+
+.status-summary-box.status-connected {
+  color: #234567;
+  background: linear-gradient(90deg, #a1c4fd 0%, #c2e9fb 100%);
+}
+
+.status-summary-box.status-error {
+  color: #fff;
+  background: #e74c3c;
+}
+
+.status-summary-box.status-checking {
+  color: #234567;
+  background: linear-gradient(90deg, #f8f9fa 0%, #e9ecef 100%);
+  border: 2px solid #dee2e6;
+}
+
+.status-summary-box span[role="img"] {
+  margin-right: 0.5rem;
+  font-size: 1.2em;
+}
