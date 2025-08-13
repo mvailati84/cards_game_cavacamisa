@@ -13,6 +13,7 @@ public class GameDto {
     private int cardsToPlay;
     private PlayerDto lastWinningPlayer;
     private PlayerDto winner;
+    private PlayerDto loser;
     private boolean gameFinished;
 
     public GameDto() {}
@@ -32,6 +33,8 @@ public class GameDto {
                 new PlayerDto(game.getLastWinningPlayer()) : null;
         this.winner = game.getWinner() != null ? 
                 new PlayerDto(game.getWinner()) : null;
+        this.loser = game.getLoser() != null ? 
+                new PlayerDto(game.getLoser()) : null;
         this.gameFinished = game.isGameFinished();
     }
 
@@ -97,6 +100,14 @@ public class GameDto {
 
     public void setWinner(PlayerDto winner) {
         this.winner = winner;
+    }
+
+    public PlayerDto getLoser() {
+        return loser;
+    }
+
+    public void setLoser(PlayerDto loser) {
+        this.loser = loser;
     }
 
     public boolean isGameFinished() {
