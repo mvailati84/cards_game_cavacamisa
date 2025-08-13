@@ -11,7 +11,7 @@ public class Player {
     public Player(String id, String name) {
         this.id = id;
         this.name = name;
-        this.deck = new ArrayList<>();
+        this.deck = new ArrayList<Card>(); // Specify type parameter
     }
 
     public String getId() {

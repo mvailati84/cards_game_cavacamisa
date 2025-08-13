@@ -135,8 +135,8 @@ public class Game {
                     tableCards.clear();
                 }
                 lastWinningPlayer = null;
+                nextPlayer();
             }
-            nextPlayer();
         } else {
             // Normal play, just move to next player
             nextPlayer();

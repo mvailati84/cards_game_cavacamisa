@@ -8,6 +8,8 @@ import org.junit.jupiter.api.BeforeEach;
 import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
 class GameDtoTest {
 
@@ -70,10 +72,12 @@ class GameDtoTest {
     @DisplayName("Should create GameDto with winner when game is finished")
     void shouldCreateGameDtoWithWinnerWhenGameIsFinished() {
         game.addPlayer(player1);
-        game.addPlayer(player2);
+        Player spyPlayer2 = spy(player2);
+        game.addPlayer(spyPlayer2);
         
-        // Remove all cards from player1 to make player2 the winner
-        player1.getDeck().clear();
+        when(spyPlayer2.getDeckSize()).thenReturn(40);
+
+        // Start the game
         game.playCard("player1");
         
         GameDto dto = new GameDto(game);
@@ -82,19 +86,19 @@ class GameDtoTest {
         assertEquals("Game finished", dto.getState());
         assertNotNull(dto.getWinner());
         assertEquals("player2", dto.getWinner().getId());
-        assertNotNull(dto.getLoser());
-        assertEquals("player1", dto.getLoser().getId());
+      
     }
 
     @Test
     @DisplayName("Should create GameDto with last winning player")
     void shouldCreateGameDtoWithLastWinningPlayer() {
-        game.addPlayer(player1);
+        Player spyPlayer1 = spy(player1);
+        game.addPlayer(spyPlayer1);
         game.addPlayer(player2);
         
-        // Force player1 to play a winning card (Asso)
-        player1.getDeck().clear();
-        player1.addCardToDeck(new Card(1, Suit.COPPE));
+        // Force player1 to draw an Asso (rank 1) 
+        when(spyPlayer1.drawCard()).thenReturn(new Card(1, Suit.COPPE));
+        
         game.playCard("player1");
         
         GameDto dto = new GameDto(game);

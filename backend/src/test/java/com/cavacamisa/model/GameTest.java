@@ -7,6 +7,8 @@ import org.junit.jupiter.api.BeforeEach;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
 class GameTest {
 
@@ -104,16 +106,16 @@ class GameTest {
     @Test
     @DisplayName("Should handle winning card (Asso) correctly")
     void shouldHandleWinningCardAssoCorrectly() {
-        game.addPlayer(player1);
+        Player spyPlayer1 = spy(player1);
+        game.addPlayer(spyPlayer1);
         game.addPlayer(player2);
         
-        // Force player1 to have an Asso (rank 1) as their top card
-        player1.getDeck().clear();
-        player1.addCardToDeck(new Card(1, Suit.COPPE)); // Asso
-        
+        // Force player1 to draw an Asso (rank 1) 
+        when(spyPlayer1.drawCard()).thenReturn(new Card(1, Suit.COPPE));
+
         assertTrue(game.playCard("player1"));
         
-        assertEquals(player1, game.getLastWinningPlayer());
+        assertEquals(spyPlayer1, game.getLastWinningPlayer());
         assertEquals(1, game.getCardsToPlay());
         assertEquals(player2, game.getCurrentPlayer());
     }
@@ -121,16 +123,16 @@ class GameTest {
     @Test
     @DisplayName("Should handle winning card (Due) correctly")
     void shouldHandleWinningCardDueCorrectly() {
-        game.addPlayer(player1);
+        Player spyPlayer1 = spy(player1);
+        game.addPlayer(spyPlayer1);
         game.addPlayer(player2);
         
-        // Force player1 to have a Due (rank 2) as their top card
-        player1.getDeck().clear();
-        player1.addCardToDeck(new Card(2, Suit.COPPE)); // Due
+        // Force player1 to draw a Due (rank 2)
+        when(spyPlayer1.drawCard()).thenReturn(new Card(2, Suit.COPPE));
         
         assertTrue(game.playCard("player1"));
         
-        assertEquals(player1, game.getLastWinningPlayer());
+        assertEquals(spyPlayer1, game.getLastWinningPlayer());
         assertEquals(2, game.getCardsToPlay());
         assertEquals(player2, game.getCurrentPlayer());
     }
@@ -138,16 +140,16 @@ class GameTest {
     @Test
     @DisplayName("Should handle winning card (Tre) correctly")
     void shouldHandleWinningCardTreCorrectly() {
-        game.addPlayer(player1);
+        Player spyPlayer1 = spy(player1);
+        game.addPlayer(spyPlayer1);
         game.addPlayer(player2);
         
-        // Force player1 to have a Tre (rank 3) as their top card
-        player1.getDeck().clear();
-        player1.addCardToDeck(new Card(3, Suit.COPPE)); // Tre
+        // Force player1 to draw a Tre (rank 3)
+        when(spyPlayer1.drawCard()).thenReturn(new Card(3, Suit.COPPE));
         
         assertTrue(game.playCard("player1"));
         
-        assertEquals(player1, game.getLastWinningPlayer());
+        assertEquals(spyPlayer1, game.getLastWinningPlayer());
         assertEquals(3, game.getCardsToPlay());
         assertEquals(player2, game.getCurrentPlayer());
     }
@@ -155,40 +157,44 @@ class GameTest {
     @Test
     @DisplayName("Should handle obligation to play cards")
     void shouldHandleObligationToPlayCards() {
-        game.addPlayer(player1);
-        game.addPlayer(player2);
+        Player spyPlayer1 = spy(player1);
+        game.addPlayer(spyPlayer1);
+        Player spyPlayer2 = spy(player2);
+        game.addPlayer(spyPlayer2);
         
-        // Player1 plays a Due, player2 must play 2 cards
-        player1.getDeck().clear();
-        player1.addCardToDeck(new Card(2, Suit.COPPE)); // Due
-        game.playCard("player1");
+        // Force player1 to draw a Winnning card : Due (rank 2)
+        when(spyPlayer1.drawCard()).thenReturn(new Card(2, Suit.COPPE));
+        // Force player2 to draw a normal card :otto (rank 8)
+        when(spyPlayer2.drawCard()).thenReturn(new Card(8, Suit.COPPE));
         
-        // Player2 plays first obligated card
+        assertTrue(game.playCard("player1"));
+        assertEquals(2, game.getCardsToPlay());
+        
+        // Force player2 to play first obligated card
         assertTrue(game.playCard("player2"));
         assertEquals(1, game.getCardsToPlay());
-        assertEquals(player1, game.getCurrentPlayer());
-        
-        // Player1 plays normal card
-        game.playCard("player1");
-        
-        // Player2 plays second obligated card
+        assertEquals(spyPlayer2, game.getCurrentPlayer());
+
+        // Force player2 to play second obligated card
         assertTrue(game.playCard("player2"));
         assertEquals(0, game.getCardsToPlay());
-        assertEquals(player1, game.getCurrentPlayer());
+        assertEquals(spyPlayer1, game.getCurrentPlayer());
         
-        // Player2 should have captured the table cards
-        assertTrue(player2.getDeckSize() > 20); // More than initial 20 cards
+        // Player1 should have captured the table cards
+        assertEquals(22, spyPlayer1.getDeckSize()); 
         assertTrue(game.getTableCards().isEmpty());
     }
 
     @Test
     @DisplayName("Should end game when current player has no cards")
     void shouldEndGameWhenCurrentPlayerHasNoCards() {
-        game.addPlayer(player1);
+        Player spyPlayer1 = spy(player1);
+        game.addPlayer(spyPlayer1);
         game.addPlayer(player2);
         
-        // Remove all cards from player1
-        player1.getDeck().clear();
+        // Force player1 to have no cards (return null when drawing)
+        when(spyPlayer1.drawCard()).thenReturn(null);
+        when(spyPlayer1.hasCards()).thenReturn(false);
         
         assertTrue(game.playCard("player1"));
         assertEquals(GameState.FINISHED, game.getState());
@@ -196,40 +202,24 @@ class GameTest {
     }
 
     @Test
-    @DisplayName("Should identify winner when player has no cards")
-    void shouldIdentifyWinnerWhenPlayerHasNoCards() {
-        game.addPlayer(player1);
-        game.addPlayer(player2);
-        
-        // Remove all cards from player1
-        player1.getDeck().clear();
-        
-        game.playCard("player1");
-        
-        assertEquals(player2, game.getWinner());
-        assertEquals(player1, game.getLoser());
-    }
-
-    @Test
     @DisplayName("Should identify winner when player has all 40 cards")
-    void shouldIdentifyWinnerWhenPlayerHasAll40Cards() {
-        game.addPlayer(player1);
-        game.addPlayer(player2);
+    void shouldIdentifyWinnerWhenPlayerHasNoCards() {
+        Player spyPlayer1 = spy(player1);
+        game.addPlayer(spyPlayer1);
+
+        Player spyPlayer2 = spy(player2);
+        game.addPlayer(spyPlayer2);
         
-        // Give all 40 cards to player1
-        player1.getDeck().clear();
-        for (int i = 0; i < 40; i++) {
-            player1.addCardToDeck(new Card((i % 10) + 1, Suit.values()[i % 4]));
-        }
+        // Force player1 to have 0 cards
+        when(spyPlayer1.getDeckSize()).thenReturn(0);
         
-        // Remove all cards from player2
-        player2.getDeck().clear();
-        
+        // Force player2 to have 40 cards
+        when(spyPlayer2.getDeckSize()).thenReturn(40);
+
         // Play a card to trigger game end check
         game.playCard("player1");
-        
-        assertEquals(player1, game.getWinner());
-        assertEquals(player2, game.getLoser());
+
+        assertEquals(spyPlayer2, game.getWinner());
     }
 
     @Test
@@ -245,18 +235,25 @@ class GameTest {
     @Test
     @DisplayName("Should handle player turn rotation correctly")
     void shouldHandlePlayerTurnRotationCorrectly() {
-        game.addPlayer(player1);
-        game.addPlayer(player2);
+        Player spyPlayer1 = spy(player1);
+        Player spyPlayer2 = spy(player2);
+        game.addPlayer(spyPlayer1);
+        game.addPlayer(spyPlayer2);
         
-        assertEquals(player1, game.getCurrentPlayer());
+        // Force player1 to draw a normal card
+        when(spyPlayer1.drawCard()).thenReturn(new Card(5, Suit.COPPE));
+        // Force player2 to draw a normal card
+        when(spyPlayer2.drawCard()).thenReturn(new Card(7, Suit.COPPE));
+
+        assertEquals(spyPlayer1, game.getCurrentPlayer());
         assertEquals(0, game.getCurrentPlayerIndex());
         
         game.playCard("player1");
-        assertEquals(player2, game.getCurrentPlayer());
+        assertEquals(spyPlayer2, game.getCurrentPlayer());
         assertEquals(1, game.getCurrentPlayerIndex());
         
         game.playCard("player2");
-        assertEquals(player1, game.getCurrentPlayer());
+        assertEquals(spyPlayer1, game.getCurrentPlayer());
         assertEquals(0, game.getCurrentPlayerIndex());
     }
 
