@@ -13,6 +13,7 @@ const Card = ({
   value, 
   isFaceUp = false, 
   isPlayable = false,
+  isAnimating = false,
   onClick,
   className = '',
   style = {}
@@ -30,6 +31,7 @@ const Card = ({
       className={`card ${isFaceUp ? 'face-up' : 'face-down'} 
                  ${isPlayable ? 'playable' : ''} 
                  ${isHovered ? 'hovered' : ''} 
+                 ${isAnimating ? 'animating' : ''}
                  ${className}`}
       style={{
         ...style,

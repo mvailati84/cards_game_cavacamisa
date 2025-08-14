@@ -4,12 +4,18 @@ import './Deck.css';
 const Deck = ({ 
   position = 'bottom',
   cardCount = 0,
-  isPlayerTurn = false
+  isPlayerTurn = false,
+  onClick,
+  disabled = false,
+  isAnimating = false
 }) => {
   const stackSize = Math.min(cardCount, 5); // Show max 5 stacked cards
   
   return (
-    <div className={`deck-area ${position} ${isPlayerTurn ? 'active-turn' : ''}`}>
+    <div 
+      className={`deck-area ${position} ${isPlayerTurn ? 'active-turn' : ''} ${disabled ? 'disabled' : ''}`}
+      onClick={!disabled ? onClick : undefined}
+    >
       <div className="deck-stack">
         {[...Array(stackSize)].map((_, index) => (
           <div
@@ -20,7 +26,11 @@ const Deck = ({
               zIndex: stackSize - index
             }}
           >
-            <Card isFaceUp={false} />
+            <Card 
+              isFaceUp={false}
+              isPlayable={!disabled && isPlayerTurn}
+              isAnimating={isAnimating && index === stackSize - 1}
+            />
           </div>
         ))}
       </div>
