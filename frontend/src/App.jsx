@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import './App.css'
 import StatusSummary from './components/StatusSummary'
+import Game from './components/Game'
 
 function App() {
   const [backendStatus, setBackendStatus] = useState('checking')
@@ -45,32 +47,39 @@ function App() {
     }, []);
 
   return (
-    <div className="app">
-      <header className="app-header">
-        <h1>🃏 Cavacamisa Cards Game</h1>
-        <div className="status-container">
-          <div className="status-item">
-            <span className="status-label">Frontend:</span>
-            <span className="status-value status-success">✅ Ready</span>
+    <Router>
+      <Routes>
+        <Route path="/" element={
+          <div className="app">
+            <header className="app-header">
+              <h1>🃏 Cavacamisa Cards Game</h1>
+              <div className="status-container">
+                <div className="status-item">
+                  <span className="status-label">Frontend:</span>
+                  <span className="status-value status-success">✅ Ready</span>
+                </div>
+                <div className="status-item">
+                  <span className="status-label">Backend:</span>
+                  <span className={`status-value ${
+                    backendStatus === 'connected' ? 'status-success' : 
+                    backendStatus === 'error' ? 'status-error' : 'status-checking'
+                  }`}>
+                    {backendStatus === 'connected' ? '✅ Ready' :
+                     backendStatus === 'error' ? '❌ Error' : '⏳ Checking...'}
+                  </span>
+                </div>
+              </div>
+              <StatusSummary 
+                backendStatus={backendStatus} 
+                backendMessage={backendMessage} 
+              />
+            </header>
           </div>
-          <div className="status-item">
-            <span className="status-label">Backend:</span>
-            <span className={`status-value ${
-              backendStatus === 'connected' ? 'status-success' : 
-              backendStatus === 'error' ? 'status-error' : 'status-checking'
-            }`}>
-              {backendStatus === 'connected' ? '✅ Ready' :
-               backendStatus === 'error' ? '❌ Error' : '⏳ Checking...'}
-            </span>
-          </div>
-        </div>
-        <StatusSummary 
-          backendStatus={backendStatus} 
-          backendMessage={backendMessage} 
-        />
-      </header>
-    </div>
-  )
+        } />
+        <Route path="/game" element={<Game />} />
+      </Routes>
+    </Router>
+  );
 }
 
 export default App

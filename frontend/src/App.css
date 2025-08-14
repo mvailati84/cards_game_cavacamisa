@@ -1,11 +1,18 @@
 .app {
   text-align: center;
   min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Game page should have a different background */
+.game-container {
+  background: #35654d;
+  min-height: 100vh;
+  width: 100%;
 }
 
 .app-header {

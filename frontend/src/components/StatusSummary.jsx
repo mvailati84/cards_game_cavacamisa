@@ -1,6 +1,8 @@
+import { useNavigate } from 'react-router-dom';
 import './StatusSummary.css'
 
 const StatusSummary = ({ backendStatus, backendMessage }) => {
+  const navigate = useNavigate();
   const getStatusContent = () => {
     switch (backendStatus) {
       case 'connected':
@@ -37,6 +39,15 @@ const StatusSummary = ({ backendStatus, backendMessage }) => {
         {statusContent.icon}
       </span>{' '}
       {statusContent.message}
+      
+      {backendStatus === 'connected' && (
+        <button 
+          className="play-button"
+          onClick={() => navigate('/game')}
+        >
+          Play Game
+        </button>
+      )}
     </div>
   )
 }
