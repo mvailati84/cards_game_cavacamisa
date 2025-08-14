@@ -5,8 +5,8 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm install
+# Install dependencies with legacy peer deps to handle React 18 compatibility
+RUN npm install --legacy-peer-deps
 
 # Copy source code
 COPY . .
@@ -15,4 +15,4 @@ COPY . .
 EXPOSE 3000
 
 # Start development server with live reloading
-CMD ["npm", "run", "dev", "--", "--config", "vite.config.dev.js"]
+CMD ["npm", "run", "dev", "--", "--host", "--config", "vite.config.dev.js"]

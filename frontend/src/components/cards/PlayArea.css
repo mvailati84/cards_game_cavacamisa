@@ -1,0 +1,60 @@
+.play-area {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px auto;
+}
+
+.played-cards-stack {
+  position: relative;
+  width: var(--card-width);
+  height: var(--card-height);
+}
+
+.played-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: all 0.3s ease;
+}
+
+.play-area-placeholder {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 1.2em;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+/* Card Playing Animation */
+@keyframes playCard {
+  0% {
+    transform: scale(0.8) translateY(-100px);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+.played-card.playing {
+  animation: playCard 0.3s ease-out forwards;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .play-area {
+    width: 150px;
+    height: 150px;
+  }
+
+  .play-area-placeholder {
+    font-size: 1em;
+    letter-spacing: 1px;
+  }
+}
