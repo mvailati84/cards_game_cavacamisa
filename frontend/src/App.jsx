@@ -14,8 +14,8 @@ function App() {
 
       const checkBackendHealth = async () => {
         try {
-          const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080';
-          const response = await fetch(`${apiUrl}/api/health`);
+          const apiUrl = import.meta.env.VITE_API_URL;
+          const response = await fetch(`${apiUrl}/health`);
           if (response.ok) {
             const data = await response.json();
             setBackendStatus('connected');

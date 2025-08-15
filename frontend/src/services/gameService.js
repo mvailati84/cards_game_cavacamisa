@@ -1,9 +1,9 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 export const GameService = {
   async createPlayer(name) {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/game/player`, {
+      const response = await fetch(`${API_BASE_URL}/game/player`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -19,7 +19,7 @@ export const GameService = {
 
   async joinGame(gameId, playerId) {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/game/${gameId}/join`, {
+      const response = await fetch(`${API_BASE_URL}/game/${gameId}/join`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -35,7 +35,7 @@ export const GameService = {
 
   async initializeGame() {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/game`, {
+      const response = await fetch(`${API_BASE_URL}/game`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -69,7 +69,7 @@ export const GameService = {
 
   async playCard(gameId, playerId) {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/game/${gameId}/play`, {
+      const response = await fetch(`${API_BASE_URL}/game/${gameId}/play`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -85,7 +85,7 @@ export const GameService = {
 
   async getGameState(gameId) {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/game/${gameId}`);
+      const response = await fetch(`${API_BASE_URL}/game/${gameId}`);
       if (!response.ok) throw new Error('Failed to fetch game state');
       return await response.json();
     } catch (error) {
