@@ -15,4 +15,4 @@ COPY . .
 EXPOSE 3000
 
 # Start development server with live reloading
-CMD ["npm", "run", "dev", "--", "--host", "--config", "vite.config.dev.js"]
+CMD ["npm", "run", "dev"]
