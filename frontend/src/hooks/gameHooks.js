@@ -10,6 +10,29 @@ export const useGameState = (gameId) => {
     if (!gameId) return;
     try {
       const state = await GameService.getGameState(gameId);
+      
+      // Log game state updates with card information
+      if (state) {
+        console.log('🎮 Game state updated:', {
+          gameState: state.gameState,
+          currentPlayer: state.currentPlayerIndex,
+          playedCards: state.playedCards,
+          players: state.players?.map(p => ({
+            id: p.id,
+            name: p.name,
+            deckSize: p.deck?.length || 0,
+            capturedCardsCount: p.capturedCards?.length || 0
+          }))
+        });
+        
+        // Log specific details about played cards
+        if (state.playedCards && state.playedCards.length > 0) {
+          console.log('🃏 Cards currently in play:', state.playedCards.map(card => 
+            `${card.rank || card.value} of ${card.suit}`
+          ));
+        }
+      }
+      
       setGameState(state);
       setError(null);
     } catch (err) {
@@ -19,13 +42,9 @@ export const useGameState = (gameId) => {
     }
   }, [gameId]);
 
-  // Initial fetch and polling setup
+  // Initial fetch only (no polling)
   useEffect(() => {
     fetchGameState();
-    
-    const pollInterval = setInterval(fetchGameState, POLLING_INTERVAL);
-    
-    return () => clearInterval(pollInterval);
   }, [fetchGameState]);
 
   const playCard = useCallback(async (playerId) => {
@@ -34,12 +53,17 @@ export const useGameState = (gameId) => {
       return false;
     }
     
+    console.log('🎴 Playing card for player:', playerId);
+    
     setIsLoading(true);
     try {
-      await GameService.playCard(gameId, playerId);
+      const result = await GameService.playCard(gameId, playerId);
+      console.log('🎴 Card played successfully:', result);
+      
       await fetchGameState(); // Refresh game state after playing
       return true;
     } catch (err) {
+      console.error('❌ Error playing card:', err.message);
       setError(err.message);
       return false;
     } finally {

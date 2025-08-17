@@ -3,6 +3,12 @@
   --card-height: calc(var(--card-width) * 1.4);
   --card-border-radius: 8px;
   --card-transition: 0.3s ease;
+  
+  /* Sprite dimensions - the deck_complete.jpg has 10 columns and 4 rows */
+  --sprite-cols: 10;
+  --sprite-rows: 4;
+  --sprite-card-width: calc(100% / var(--sprite-cols));
+  --sprite-card-height: calc(100% / var(--sprite-rows));
 }
 
 .card {
@@ -45,6 +51,24 @@
   justify-content: space-between;
   padding: 8px;
   box-sizing: border-box;
+}
+
+/* Card sprite styles */
+.card-front.with-sprite {
+  background-image: url('../../assests/img/deck_complete.jpg');
+  background-size: calc(var(--sprite-cols) * 100%) calc(var(--sprite-rows) * 100%);
+  background-repeat: no-repeat;
+  background-color: transparent !important;
+  padding: 0;
+  border: 1px solid #ddd;
+  display: block !important;
+  flex-direction: unset !important;
+  justify-content: unset !important;
+}
+
+.card-front.with-sprite .card-corner,
+.card-front.with-sprite .card-center {
+  display: none;
 }
 
 .card-back {
