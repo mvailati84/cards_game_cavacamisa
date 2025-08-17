@@ -1,8 +1,12 @@
 package com.cavacamisa.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 
 public class Game {
+    private static final Logger logger = LoggerFactory.getLogger(Game.class);
     private final String id;
     private final List<Player> players;
     private final List<Card> tableCards; // Cards on the table
@@ -98,40 +102,48 @@ public class Game {
     }
 
     public boolean playCard(String playerId) {
+        logger.info("Attempting to play card for player: {}", playerId);
+        
         if (state != GameState.PLAYING) {
+            logger.warn("Cannot play card - game is not in PLAYING state. Current state: {}", state);
             return false;
         }
 
         Player currentPlayer = getCurrentPlayer();
         if (!currentPlayer.getId().equals(playerId)) {
-            return false; // Not this player's turn
+            logger.warn("Invalid player turn. Expected: {}, Actual: {}", currentPlayer.getId(), playerId);
+            return false;
         }
 
         if (!currentPlayer.hasCards()) {
-            // Current player has no cards, game is finished
-            // The other player wins
+            logger.info("Player {} has no cards left. Game finished.", playerId);
             state = GameState.FINISHED;
             return true;
         }
 
         // Get the top card from the player's deck (index 0)
         Card playedCard = currentPlayer.drawCard();
-        
+        logger.info("Player {} played card: {}", playerId, playedCard);
         // Add the card to the table
         tableCards.add(playedCard);
 
         // Check if it's a winning card
         if (playedCard.isWinningCard()) {
+            logger.info("Winning card played! Player {} must play {} cards", 
+                getCurrentPlayer().getId(), playedCard.getCardsToPlay());
             lastWinningPlayer = currentPlayer;
             cardsToPlay = playedCard.getCardsToPlay();
             nextPlayer();
         } else if (cardsToPlay > 0) {
             // Player is obligated to play cards
             cardsToPlay--;
+            logger.info("Obligatory card played. Remaining cards to play: {}", cardsToPlay);
             if (cardsToPlay == 0) {
                 // Player completed their obligation, capture the table cards
                 if (lastWinningPlayer != null) {
+                    int capturedCards = tableCards.size();
                     lastWinningPlayer.captureCards(new ArrayList<>(tableCards));
+                    logger.info("Player {} captured {} cards", lastWinningPlayer.getId(), capturedCards);
                     tableCards.clear();
                 }
                 lastWinningPlayer = null;
@@ -139,11 +151,14 @@ public class Game {
             }
         } else {
             // Normal play, just move to next player
+            logger.info("Normal card played. Moving to next player");
             nextPlayer();
         }
 
         // Check if game is finished
         checkGameEnd();
+        logger.info("Current game state - Table cards: {}, Current player: {}, Cards to play: {}", 
+            tableCards.size(), getCurrentPlayer().getId(), cardsToPlay);
 
         return true;
     }

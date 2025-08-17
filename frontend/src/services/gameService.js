@@ -69,12 +69,14 @@ export const GameService = {
 
   async playCard(gameId, playerId) {
     try {
+      const playerIdStr = playerId.toString();
+
       const response = await fetch(`${API_BASE_URL}/game/${gameId}/play`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ playerId })
+        body: JSON.stringify({ playerId: playerIdStr })
       });
       if (!response.ok) throw new Error('Failed to play card');
       return await response.json();

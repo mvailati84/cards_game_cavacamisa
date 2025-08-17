@@ -28,17 +28,24 @@ export const useGameState = (gameId) => {
     return () => clearInterval(pollInterval);
   }, [fetchGameState]);
 
-  const playCard = async (playerId) => {
+  const playCard = useCallback(async (playerId) => {
+    if (!gameId || !playerId) {
+      setError('Invalid game or player ID');
+      return false;
+    }
+    
     setIsLoading(true);
     try {
       await GameService.playCard(gameId, playerId);
       await fetchGameState(); // Refresh game state after playing
+      return true;
     } catch (err) {
       setError(err.message);
+      return false;
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [gameId, fetchGameState]);
 
   return {
     gameState,
@@ -49,10 +56,10 @@ export const useGameState = (gameId) => {
   };
 };
 
-export const useCardAnimation = () => {
+export const useCardAnimation = (animationDuration = 500) => {
   const [animatingCards, setAnimatingCards] = useState(new Set());
 
-  const startCardAnimation = (cardId) => {
+  const startCardAnimation = useCallback((cardId) => {
     setAnimatingCards(prev => new Set([...prev, cardId]));
     return new Promise(resolve => {
       setTimeout(() => {
@@ -62,12 +69,22 @@ export const useCardAnimation = () => {
           return next;
         });
         resolve();
-      }, 500); // Animation duration
+      }, animationDuration);
     });
-  };
+  }, [animationDuration]);
+
+  const clearAllAnimations = useCallback(() => {
+    setAnimatingCards(new Set());
+  }, []);
+
+  const isCardAnimating = useCallback((cardId) => {
+    return animatingCards.has(cardId);
+  }, [animatingCards]);
 
   return {
     animatingCards,
-    startCardAnimation
+    startCardAnimation,
+    clearAllAnimations,
+    isCardAnimating
   };
 };

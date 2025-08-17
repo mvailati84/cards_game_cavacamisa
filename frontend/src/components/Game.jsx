@@ -4,6 +4,12 @@ import Deck from './cards/Deck';
 import PlayArea from './cards/PlayArea';
 import { GameService } from '../services/gameService';
 import { useGameState, useCardAnimation } from '../hooks/gameHooks';
+import { 
+  getPlayerByIndex, 
+  getPlayerAnimationId, 
+  canPlayerMove, 
+  getPlayersDisplayInfo 
+} from '../utils/playerUtils';
 
 const Game = () => {
   const [gameId, setGameId] = useState(null);
@@ -24,12 +30,18 @@ const Game = () => {
     initGame();
   }, []);
 
-  const handleDeckClick = useCallback(async (playerId) => {
-    if (!gameState || isLoading || gameState.currentPlayer !== playerId) return;
+  const handleDeckClick = useCallback(async (playerIndex) => {
+    if (!canPlayerMove(gameState, playerIndex, isLoading)) return;
+    
+    const players = gameState?.players || [];
+    const player = getPlayerByIndex(players, playerIndex);
+    if (!player) return;
     
     try {
-      await playCard(playerId);
-      await startCardAnimation(`${playerId}-card`);
+      const success = await playCard(player.id);
+      if (success) {
+        await startCardAnimation(getPlayerAnimationId(playerIndex));
+      }
     } catch (error) {
       console.error('Error playing card:', error);
     }
@@ -44,16 +56,7 @@ const Game = () => {
   }
 
   // Extract and map backend data structure to frontend expectations
-  const players = gameState.players || [];
-  const player1 = players[0] ? { 
-    name: players[0].name, 
-    cardCount: players[0].deckSize 
-  } : { name: 'Player 1', cardCount: 0 };
-  const player2 = players[1] ? { 
-    name: players[1].name, 
-    cardCount: players[1].deckSize 
-  } : { name: 'Player 2', cardCount: 0 };
-  const currentPlayer = gameState.currentPlayerIndex + 1; // Backend uses 0-based index, frontend uses 1-based
+  const { player1, player2 } = getPlayersDisplayInfo(gameState);
   const playedCards = gameState.tableCards || [];
   const isGameOver = gameState.gameFinished || false;
 
@@ -66,10 +69,10 @@ const Game = () => {
         <Deck
           position="top"
           cardCount={player2.cardCount}
-          isPlayerTurn={currentPlayer === 2}
-          onClick={() => handleDeckClick(2)}
-          disabled={currentPlayer !== 2 || isLoading || isGameOver}
-          isAnimating={animatingCards.has('2-card')}
+          isPlayerTurn={canPlayerMove(gameState, 1, false)}
+          onClick={() => handleDeckClick(1)}
+          disabled={!canPlayerMove(gameState, 1, isLoading) || isGameOver}
+          isAnimating={animatingCards.has(getPlayerAnimationId(1))}
         />
       </div>
       
@@ -93,10 +96,10 @@ const Game = () => {
         <Deck
           position="bottom"
           cardCount={player1.cardCount}
-          isPlayerTurn={currentPlayer === 1}
-          onClick={() => handleDeckClick(1)}
-          disabled={currentPlayer !== 1 || isLoading || isGameOver}
-          isAnimating={animatingCards.has('1-card')}
+          isPlayerTurn={canPlayerMove(gameState, 0, false)}
+          onClick={() => handleDeckClick(0)}
+          disabled={!canPlayerMove(gameState, 0, isLoading) || isGameOver}
+          isAnimating={animatingCards.has(getPlayerAnimationId(0))}
         />
       </div>
 
