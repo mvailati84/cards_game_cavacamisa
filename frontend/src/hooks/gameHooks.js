@@ -14,7 +14,7 @@ export const useGameState = (gameId) => {
       // Log game state updates with card information
       if (state) {
         console.log('🎮 Game state updated:', {
-          gameState: state.gameState,
+          gameState: state.state,
           currentPlayer: state.currentPlayerIndex,
           playedCards: state.playedCards,
           players: state.players?.map(p => ({
