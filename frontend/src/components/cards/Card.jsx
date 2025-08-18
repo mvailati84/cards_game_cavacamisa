@@ -39,7 +39,6 @@ const getSpritePosition = (suit, value) => {
   const xPercent = col * (100 / 9); // 9 gaps between 10 columns
   const yPercent = row * (100 / 3); // 3 gaps between 4 rows
 
-  console.log(`Card background position: xPercent=${xPercent}, yPercent=${yPercent}`);
   
   return {
     backgroundPosition: `${xPercent}% ${yPercent}%`
@@ -74,7 +73,6 @@ const Card = ({
       console.log('Missing card data:', { suit, cardValue, rank, value });
       return null;
     }
-    console.log('Calculating sprite position for:', { suit, cardValue });
     return getSpritePosition(suit, cardValue);
   }, [suit, cardValue]);
 
