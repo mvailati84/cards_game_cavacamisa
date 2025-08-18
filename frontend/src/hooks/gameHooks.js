@@ -58,7 +58,7 @@ export const useGameState = (gameId) => {
     setIsLoading(true);
     try {
       const result = await GameService.playCard(gameId, playerId);
-      console.log('🎴 Card played successfully:', result);
+      console.log('🎴 Card played successfully:', result.tableCards[result.tableCards.length - 1]);
       
       await fetchGameState(); // Refresh game state after playing
       return true;

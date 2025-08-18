@@ -16,7 +16,7 @@ const PlayArea = ({ playedCards = [] }) => {
           >
             <Card
               suit={card.suit}
-              value={card.value}
+              value={card.rank}
               isFaceUp={true}
             />
           </div>

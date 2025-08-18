@@ -1,12 +1,5 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import './Card.css';
-
-const SUITS = {
-  Coppe: '🏆',   // Cups
-  Spade: '⚔️',   // Swords
-  Bastoni: '🏑', // Clubs/Batons
-  Ori: '🪙'      // Coins
-};
 
 // Mapping suits to sprite rows (0-indexed)
 const SUIT_TO_ROW = {
@@ -36,12 +29,17 @@ const getSpritePosition = (suit, value) => {
   const col = VALUE_TO_COL[value];
   
   if (row === undefined || col === undefined) {
+    console.warn(`Invalid card: suit=${suit}, value=${value}`);
     return null;
   }
   
   // Calculate background position as percentage
-  const xPercent = -(col * 100);
-  const yPercent = -(row * 100);
+  // For a 10-column sprite sheet, each card is 10% width
+  // For a 4-row sprite sheet, each card is 25% height
+  const xPercent = col * (100 / 9); // 9 gaps between 10 columns
+  const yPercent = row * (100 / 3); // 3 gaps between 4 rows
+
+  console.log(`Card background position: xPercent=${xPercent}, yPercent=${yPercent}`);
   
   return {
     backgroundPosition: `${xPercent}% ${yPercent}%`
@@ -70,9 +68,15 @@ const Card = ({
   // Use rank if available (from backend), otherwise fall back to value
   const cardValue = rank || value;
 
-  // Get sprite position for this card
-  const spritePosition = getSpritePosition(suit, cardValue);
-  const useSprite = spritePosition !== null;
+  // Memoize sprite position calculation to avoid recomputing on every render
+  const spritePosition = useMemo(() => {
+    if (!suit || !cardValue) {
+      console.log('Missing card data:', { suit, cardValue, rank, value });
+      return null;
+    }
+    console.log('Calculating sprite position for:', { suit, cardValue });
+    return getSpritePosition(suit, cardValue);
+  }, [suit, cardValue]);
 
   return (
     <div
@@ -91,24 +95,9 @@ const Card = ({
     >
       <div className="card-inner">
         <div 
-          className={`card-front ${useSprite ? 'with-sprite' : ''}`}
-          style={useSprite ? spritePosition : {}}
+          className="card-front with-sprite"
+          style={isFaceUp && spritePosition ? spritePosition : {}}
         >
-          {!useSprite && (
-            <>
-              <div className="card-corner top-left">
-                <div className="card-value">{cardValue}</div>
-                <div className="card-suit">{SUITS[suit]}</div>
-              </div>
-              <div className="card-center">
-                <div className="card-suit large">{SUITS[suit]}</div>
-              </div>
-              <div className="card-corner bottom-right">
-                <div className="card-value">{cardValue}</div>
-                <div className="card-suit">{SUITS[suit]}</div>
-              </div>
-            </>
-          )}
         </div>
         <div className="card-back">
           <div className="card-pattern"></div>
