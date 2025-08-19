@@ -31,3 +31,11 @@ yarn-error.log*
 
 # Docker
 .dockerignore
+
+# SSL Certificates (never commit private keys!)
+ssl/
+*.key
+*.crt
+*.pem
+*.p12
+*.pfx

@@ -1,13 +1,18 @@
 .play-area {
   position: relative;
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
+  width: 250px;
+  height: 250px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
   display: flex;
   justify-content: center;
   align-items: center;
   margin: 20px auto;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 
+    inset 0 0 30px rgba(255, 255, 255, 0.1),
+    0 4px 20px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(5px);
 }
 
 .played-cards-stack {
@@ -24,10 +29,12 @@
 }
 
 .play-area-placeholder {
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 1.2em;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 1.1em;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 2px;
+  letter-spacing: 3px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 /* Card Playing Animation */
@@ -49,12 +56,25 @@
 /* Responsive Design */
 @media (max-width: 768px) {
   .play-area {
-    width: 150px;
-    height: 150px;
+    width: 180px;
+    height: 180px;
   }
 
   .play-area-placeholder {
-    font-size: 1em;
+    font-size: 0.9em;
+    letter-spacing: 2px;
+  }
+}
+
+@media (max-width: 480px) {
+  .play-area {
+    width: 150px;
+    height: 150px;
+    margin: 15px auto;
+  }
+
+  .play-area-placeholder {
+    font-size: 0.8em;
     letter-spacing: 1px;
   }
 }

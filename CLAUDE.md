@@ -8,6 +8,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Development environment**: `docker-compose -f docker-compose.dev.yml up --build`
 - **Production environment**: `docker-compose -f docker-compose.prod.yml up --build`
 
+### HTTPS Setup
+⚠️ **SECURITY IMPORTANT**: Before running the application with HTTPS, you must generate SSL certificates:
+- **Generate SSL certificates**: `bash ssl-setup.sh` (creates self-signed certificates for development)
+- **SSL files**: The `ssl/` directory is ignored by git and should NEVER be committed to version control
+- **Access**: Application available at `https://localhost` (HTTP redirects to HTTPS)
+
 ### Testing
 - **Backend tests**: `backend/run-tests.bat` (Windows) or run `docker build -f backend/Dockerfile.test -t cavacamisa-backend-tests backend && docker run --rm cavacamisa-backend-tests`
 - **Frontend development**: `cd frontend && npm run dev` (runs Vite dev server on port 3000)
