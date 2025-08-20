@@ -61,50 +61,108 @@ const Game = () => {
   const isGameOver = gameState.gameFinished || false;
 
   return (
-    <div className={`game-container ${isLoading ? 'loading' : ''}`}>
-      {error && <div className="error-message">{error}</div>}
-      
-      <div className="player-area player-top">
-        <div className="player-name">{player2.name}</div>
-        <Deck
-          position="top"
-          cardCount={player2.cardCount}
-          isPlayerTurn={canPlayerMove(gameState, 1, false)}
-          onClick={() => handleDeckClick(1)}
-          disabled={!canPlayerMove(gameState, 1, isLoading) || isGameOver}
-          isAnimating={animatingCards.has(getPlayerAnimationId(1))}
-        />
-      </div>
-      
-      <div className="game-table">
-        <PlayArea 
-          playedCards={playedCards}
-          isAnimating={animatingCards.size > 0}
-        />
-        {isGameOver && (
-          <div className="game-over-overlay">
-            Game Over!
-            <div className="winner">
-              {gameState.winner ? `${gameState.winner.name} Wins!` : "It's a tie!"}
+    <>
+      <div className={`game-container ${isLoading ? 'loading' : ''}`}>
+        {error && <div className="error-message">{error}</div>}
+        
+        {/* Player 2 Panel (Left Side) */}
+        <div className={`player-panel player2-panel ${canPlayerMove(gameState, 1, false) ? 'active-turn' : ''}`}>
+          <div className="player-avatar">
+            {player2.name.charAt(0).toUpperCase()}
+          </div>
+          <div className="player-name">{player2.name}</div>
+          <div className="player-stats">
+            <div className="stat-item">
+              <span className="stat-label">Cards</span>
+              <span className="stat-value">{player2.cardCount}</span>
+            </div>
+            <div className="stat-item">
+              <span className="stat-label">Score</span>
+              <span className="stat-value">0</span>
             </div>
           </div>
-        )}
+          <div 
+            className={`turn-indicator ${canPlayerMove(gameState, 1, false) ? 'active' : 'inactive'}`}
+            onClick={canPlayerMove(gameState, 1, false) && !isLoading && !isGameOver ? () => handleDeckClick(1) : undefined}
+            style={{ cursor: canPlayerMove(gameState, 1, false) && !isLoading && !isGameOver ? 'pointer' : 'default' }}
+          >
+            {canPlayerMove(gameState, 1, false) ? 'Your Turn' : 'Waiting'}
+          </div>
+        </div>
+        
+        {/* Central Game Area */}
+        <div className="game-area">
+          <div className="game-table">
+            <PlayArea 
+              playedCards={playedCards}
+              isAnimating={animatingCards.size > 0}
+            />
+            {isGameOver && (
+              <div className="game-over-overlay">
+                Game Over!
+                <div className="winner">
+                  {gameState.winner ? `${gameState.winner.name} Wins!` : "It's a tie!"}
+                </div>
+              </div>
+            )}
+          </div>
+          
+          <div className="decks-container">
+            <Deck
+              position="left"
+              cardCount={player2.cardCount}
+              isPlayerTurn={canPlayerMove(gameState, 1, false)}
+              onClick={() => handleDeckClick(1)}
+              disabled={!canPlayerMove(gameState, 1, isLoading) || isGameOver}
+              isAnimating={animatingCards.has(getPlayerAnimationId(1))}
+            />
+            <Deck
+              position="right"
+              cardCount={player1.cardCount}
+              isPlayerTurn={canPlayerMove(gameState, 0, false)}
+              onClick={() => handleDeckClick(0)}
+              disabled={!canPlayerMove(gameState, 0, isLoading) || isGameOver}
+              isAnimating={animatingCards.has(getPlayerAnimationId(0))}
+            />
+          </div>
+        </div>
+
+        {/* Player 1 Panel (Right Side) */}
+        <div className={`player-panel player1-panel ${canPlayerMove(gameState, 0, false) ? 'active-turn' : ''}`}>
+          <div className="player-avatar">
+            {player1.name.charAt(0).toUpperCase()}
+          </div>
+          <div className="player-name">{player1.name}</div>
+          <div className="player-stats">
+            <div className="stat-item">
+              <span className="stat-label">Cards</span>
+              <span className="stat-value">{player1.cardCount}</span>
+            </div>
+            <div className="stat-item">
+              <span className="stat-label">Score</span>
+              <span className="stat-value">0</span>
+            </div>
+          </div>
+          <div 
+            className={`turn-indicator ${canPlayerMove(gameState, 0, false) ? 'active' : 'inactive'}`}
+            onClick={canPlayerMove(gameState, 0, false) && !isLoading && !isGameOver ? () => handleDeckClick(0) : undefined}
+            style={{ cursor: canPlayerMove(gameState, 0, false) && !isLoading && !isGameOver ? 'pointer' : 'default' }}
+          >
+            {canPlayerMove(gameState, 0, false) ? 'Your Turn' : 'Waiting'}
+          </div>
+        </div>
       </div>
 
-      <div className="player-area player-bottom">
-        <div className="player-name">{player1.name}</div>
-        <Deck
-          position="bottom"
-          cardCount={player1.cardCount}
-          isPlayerTurn={canPlayerMove(gameState, 0, false)}
-          onClick={() => handleDeckClick(0)}
-          disabled={!canPlayerMove(gameState, 0, isLoading) || isGameOver}
-          isAnimating={animatingCards.has(getPlayerAnimationId(0))}
-        />
-      </div>
-
-      {isLoading && <div className="loading-overlay">Processing move...</div>}
-    </div>
+      {/* Loading Overlay - Outside game container for proper positioning */}
+      {isLoading && (
+        <div className="game-loading-overlay">
+          <div className="loading-content">
+            <div className="loading-spinner"></div>
+            <div>Processing move...</div>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 

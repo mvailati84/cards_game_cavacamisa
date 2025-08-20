@@ -17,6 +17,7 @@ frontend/.env.production.local
 .vscode/
 .idea/
 .claude/
+.claude_context/
 *.swp
 *.swo
 

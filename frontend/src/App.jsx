@@ -52,7 +52,10 @@ function App() {
         <Route path="/" element={
           <div className="app">
             <header className="app-header">
-              <h1>🃏 Cavacamisa Cards Game</h1>
+              <div className="title-container">
+                <img src="/card-game_16860231.png" alt="Cavacamisa Cards Game" className="app-logo" />
+                <h1 className="app-title">Cavacamisa Cards Game</h1>
+              </div>
               <div className="status-container">
                 <div className="status-item">
                   <span className="status-label">Frontend:</span>

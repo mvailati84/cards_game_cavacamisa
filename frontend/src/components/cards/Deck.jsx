@@ -13,7 +13,7 @@ const Deck = ({
   
   return (
     <div 
-      className={`deck-area ${position} ${isPlayerTurn ? 'active-turn' : ''} ${disabled ? 'disabled' : ''}`}
+      className={`deck-container ${position} ${isPlayerTurn ? 'active-turn' : ''} ${disabled ? 'disabled' : ''}`}
       onClick={!disabled ? onClick : undefined}
     >
       <div className="deck-stack">
